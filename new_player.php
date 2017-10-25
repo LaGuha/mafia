@@ -1,0 +1,24 @@
+<head>
+	<title>Рейтинг</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css.css">
+	<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+</head>
+<body>
+	<form method=POST>
+		<p>Ник:&nbsp;<input name="Nick"></p>
+		<p>Рейтинг:&nbsp;<input name="Rating"></p>
+		<p>Игр:&nbsp;<input name="Plays"></p>
+		<p>Побед:&nbsp;<input name="Wins"></p>
+		<p>MVP:&nbsp;<input name="MVP"></p>
+		<p>Побед красными:&nbsp;<input name="Red"></p>
+		<p>Побед черными:&nbsp;<input name="Black"></p>
+		<p>Побед шерифом:&nbsp;<input name="Cop"></p>
+		<p><input type=submit value="Добавить"></p>
+	</form>
+	<? if (isset($_POST['Nick'])){
+		include "db.php";
+		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,?,?,?,?,?,?)");
+		$st->execute([$_POST['Nick'],$_POST['Rating'],$_POST['Rating'],$_POST['Plays'],$_POST['Wins'],$_POST['MVP'],$_POST['Red'],$_POST['Black'],$_POST['Cop']]);
+	}
