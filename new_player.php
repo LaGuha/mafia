@@ -17,6 +17,11 @@
 		<p>Побед шерифом:&nbsp;<input name="Cop"></p>
 		<p><input type=submit value="Добавить"></p>
 	</form>
+	<p>Вставить таблицу</p>
+	<form action=update_table.php method="POST" enctype="multipart/form-data">
+		<input type="file" name=file>
+		<button type=submit>Обновить таблицу</button>
+	</form>
 	<? if (isset($_POST['Nick'])){
 		include "db.php";
 		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,?,?,?,?,?,?)");

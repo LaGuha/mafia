@@ -8,7 +8,7 @@
 <body>
 	<div id=table>
 		<p class="header">Рейтинг клуба мафии</p>
-		<div id=row>
+		<div class="player">
 			<p style="width: 45px">№</p>
 			<p style="width: 155px">Ник</p>
 			<p style="width: 65px">Рейтинг</p>
@@ -22,12 +22,13 @@
 			<p style="width: 155px">% Побед шерифом</p>
 		</div>
 		<? include "db.php";
-			$st=$db->query("SELECT * FROM players ORDER BY Rating");
+			$st=$db->query("SELECT * FROM players ORDER BY Rating DESC");
 			$i=0;
 			while ($player=$st->fetch()){
 				$i++;
+				if ($player['Num_games']>4){
 				?>
-					<div id=row>
+					<div class="player" id=<?=$player['id']?>>
 						<p style="width: 45px"><?=$i?></p>
 						<p style="width: 155px"><?=$player['Nick']?></p>
 						<p style="width: 65px"><?=$player['Rating']?></p>
@@ -36,11 +37,12 @@
 						<p style="width: 55px"><?=$player['Wins']?></p>
 						<p style="width: 65px"><?=round($player['Wins']/$player['Num_games']*100,0)?> %</p>
 						<p style="width: 45px"><?=$player['MVP']?></p>
-						<p style="width: 155px"><?=round($player['Wins_red']/$player['Num_games']*100,0)?> %</p>
-						<p style="width: 155px"><?=round($player['Wins_black']/$player['Num_games']*100,0)?> %</p>
-						<p style="width: 155px"><?=round($player['Wins_cop']/$player['Num_games']*100,0)?> %</p>
+						<p style="width: 155px"><? if ($player['Red']) echo(round($player['Wins_red']/$player['Red']*100,0))." %"; else echo "Нет игр";?></p>
+						<p style="width: 155px"><? if ($player['Black']) echo (round($player['Wins_black']/$player['Black']*100,0))." %"; else echo "Нет игр";?></p>
+						<p style="width: 155px"><?if ($player['Cop']) echo (round($player['Wins_cop']/$player['Cop']*100,0))." %"; else echo "Нет игр";?> </p>
 					</div>
 				<?
+				}
 			}
 		?>
 	</div>

@@ -1,3 +1,6 @@
+body{
+	min-width: 1005px;
+}
 #table{
 	display: flex;
 	flex-wrap: wrap;
@@ -12,13 +15,13 @@
 	margin: 0;
 	border-bottom: 1px solid #f5f5f5;
 }
-#row{
+.player{
 	display: flex;
 	height: 25px;
 	color: black;
 	background: white;
 }
-#row p{
+.player p{
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -26,14 +29,14 @@
 	height: 25px;
 	margin: 0;
 }
-#row p:last-child{
+.player p:last-child{
 	border: none;
 }
-#row:nth-child(2){
+.player:nth-child(2){
 	background: #f07e0a !important;
 	color: white;
 }
-#row:nth-child(2n){
+.player:nth-child(2n){
 	background: #fde4cc;
 }
 
