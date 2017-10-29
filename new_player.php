@@ -1,3 +1,5 @@
+
+<? session_start();?>
 <head>
 	<title>Рейтинг</title>
 	<meta charset="UTF-8">
@@ -6,6 +8,20 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 </head>
 <body>
+	<? 
+		if (!isset($_SESSION['admin'])){
+			?>
+				<form>
+					<p>Login <input name=login></p>
+					<p>Password <input name=password></p>
+					<input type=hidden name=admin value=1>
+					<button type=submit>Enter</button>
+				</form>
+			<? 
+		}else{
+
+
+	?>
 	<form method=POST>
 		<p>Ник:&nbsp;<input name="Nick"></p>
 		<p>Рейтинг:&nbsp;<input name="Rating"></p>
@@ -22,8 +38,18 @@
 		<input type="file" name=file>
 		<button type=submit>Обновить таблицу</button>
 	</form>
-	<? if (isset($_POST['Nick'])){
+	<? 		}
+	if (isset($_POST['Nick'])){
 		include "db.php";
 		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,?,?,?,?,?,?)");
 		$st->execute([$_POST['Nick'],$_POST['Rating'],$_POST['Rating'],$_POST['Plays'],$_POST['Wins'],$_POST['MVP'],$_POST['Red'],$_POST['Black'],$_POST['Cop']]);
+	}
+	if (isset($_GET['admin'])){
+		include "db.php";
+		$st=$db->prepare("SELECT password FROM stuff WHERE login=?");
+		$st->execute([$_GET['login']]);
+		$stuff=$st->fetch();
+		if ($stuff['password']=$_GET['password']){
+			$_SESSION['admin']=1;
+		}
 	}

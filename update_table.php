@@ -1,5 +1,6 @@
 <?
-	session_start();
+session_start();
+if (isset($_SESSION['admin'])){
 	include "db.php";
 		$uploaddir = '/var/www/html/mafia/uploads/';
 		$uploadfile = $uploaddir . "tmp.csv";
@@ -15,9 +16,9 @@
 			        $num = count($data);
 			        //echo "<p> $num полей в строке $row: <br /></p>\n";
 			        if ($row>1){
-			        	$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,?,?,?,?,?,?,?,?,?)");
+			        	$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			        //print_r($st);
-			       		 $st->execute([$data[1],$data[18],$data[19],$data[3],$data[4],$data[17],$data[5],$data[6],$data[8],$data[9],$data[11],$data[12]]);
+			       		 $st->execute([$data[1],$data[18],$data[19],$data[3],$data[4],$data[17],$data[5],$data[6],$data[8],$data[9],$data[11],$data[12],$data[14],$data[15]]);
 			        }
 			        $row++;
 
@@ -35,4 +36,5 @@
 		print "</pre>";
 
 	//header("Location:/mvp/admin.php?ok=ok");
+}
 ?>

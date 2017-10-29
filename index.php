@@ -1,3 +1,4 @@
+<? session_start(); ?>
 <head>
 	<title>Рейтинг</title>
 	<meta charset="UTF-8">
@@ -6,6 +7,17 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 </head>
 <body>
+<? 
+	if (isset($_SESSION['admin'])){
+?>
+	<center>
+		<button id="start">Начать сессию</button>
+		<button id="stop">Завершить сессию</button>
+		<p>&nbsp;</p>
+	</center>
+<?
+	}
+?>
 	<div id=table>
 		<p class="header">Рейтинг клуба мафии</p>
 		<div class="player">
@@ -30,7 +42,7 @@
 				?>
 					<div class="player" id=<?=$player['id']?>>
 						<p style="width: 45px"><?=$i?></p>
-						<p style="width: 155px"><?=$player['Nick']?></p>
+						<p style="width: 155px" class="Name"><?=$player['Nick']?></p>
 						<p style="width: 65px"><?=$player['Rating']?></p>
 						<p style="width: 55px"><?=$player['Rating']-$player['Prev_rating']?></p>
 						<p style="width: 45px"><?=$player['Num_games']?></p>
@@ -46,3 +58,173 @@
 			}
 		?>
 	</div>
+	<script type="text/javascript">
+		$("#start").click(function(){
+			alert("Пожалуйста, выберите красную команду");
+			var red = new Array();
+			var r=1;
+			var cop=0
+			var black= new Array();
+			var b=1;
+			var don=0;
+			var start=1
+			var mvp=0;
+			var win =false
+
+			
+				$(".player").click(function(){
+					
+					if (r<8){
+						var err=0; //повторно добавленный красный игрок
+						for (var a=0;a<r;a++){
+							if (red[a]==this.id){
+								alert("Выбранный игрок уже добавлен");
+								var err=1;
+							}
+						}
+						if (!err){
+							ok = confirm("Добавлен "+ $(this).find($(".Name")).text())
+							if (ok){
+								red.push(this.id)
+								r++	
+							}
+							if (r==8){
+								alert("Выберите шерифа")
+							}	
+						}
+						
+					}else if (!cop){
+						var err=1; // черный шериф
+						for (var a=0;a<r;a++){
+							if (red[a]==this.id){
+								ok= confirm ("Шериф добавлен - "+ $(this).find($(".Name")).text())
+								if (ok){
+									cop=this.id
+									err =0;
+									alert ("Выберите черную команду")	
+								}
+															
+							}
+						}
+						if (err){
+							alert("Шериф должен быть из красной команды")
+						}
+
+					}else if (b<4){
+						var err=0; //повторно добавленный красный игрок
+						for (var a=0;a<b;a++){
+							if (black[a]==this.id){
+								alert("Выбранный игрок уже добавлен");
+								var err=1;
+							}
+						}
+						for (var a=0;a<r;a++){
+							if (red[a]==this.id){
+								alert("Мафия не может быть в красной команде");
+								var err=1;
+							}
+						}
+						if (!err){
+							ok=confirm("Добавлен "+ $(this).find($(".Name")).text())
+							if (ok){
+								black.push(this.id)
+								b++
+							}
+							
+							if (b==4){
+								alert("Выберите дона")
+							}	
+						}
+					}else if(!don){
+						var err=1; // черный шериф
+						for (var a=0;a<b;a++){
+							if (black[a]==this.id){
+								ok=confirm ("Дон добавлен - "+ $(this).find($(".Name")).text())
+								if (ok){
+									don=this.id
+									err =0;
+									win = confirm("Победившая команда - ок - крассные, cancel - черные")
+									alert("Выберите MVP")
+								}
+								
+							}
+						}
+						if (err){
+							alert("Дон должен быть из черной команды")
+						}
+					}else if (!mvp){
+						err=1
+						if (win){
+							for (var a=0;a<r;a++){
+								if (this.id == red[a]){
+									ok=confirm ("MVP добавлен - "+ $(this).find($(".Name")).text())
+									if (ok){
+										mvp=this.id
+										err =0;
+										add_game(red,cop,black,don,mvp,win,start)
+										for (a=0;a<r;a++){
+											delete (red[a])
+										}
+										for (a=0;a<b;a++){
+											delete (red[a])
+										}
+										cop=0;
+										don=0;
+										start=2;
+										//alert ("Игра успешно добавлена. Выберите красную команду или завершите сессию")
+									}
+								}
+							}
+						}else{
+							for (var a=0;a<b;a++){
+								if (this.id == black[a]){
+									ok=confirm ("MVP добавлен - "+ $(this).find($(".Name")).text())
+									if (ok){
+										mvp=this.id
+										err =0;
+										add_game(red,cop,black,don,mvp,win,start)
+										for (a=0;a<r;a++){
+											delete (red[a])
+										}
+										for (a=0;a<b;a++){
+											delete (red[a])
+										}
+										cop=0;
+										don=0;
+										start=2;
+										//alert ("Игра успешно добавлена. Выберите красную команду или завершите сессию")
+									}
+								}
+							}
+						}
+						if (err){
+							alert("MVP не может быть из проигравшей команды")
+						}
+					}
+				})
+				
+			
+			
+		})
+ function add_game(red,cop,black,don,mvp,win,start){
+ 	$.ajax({
+        url: "add_game.php",
+        type: "POST",
+        data:{
+            red : red,
+			cop : cop,
+			black : black,
+			don : don,
+			mvp:mvp,
+			win:win,
+			start : start
+        },
+        success: function(data){
+            alert("Игра успешно добавлена. Изменение рейтинга составляет "+data+". Выберите красную команду или завершите сессию")            
+        }
+    })
+ }
+
+
+	</script>
+</body>
