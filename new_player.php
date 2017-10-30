@@ -25,12 +25,6 @@
 	<form method=POST>
 		<p>Ник:&nbsp;<input name="Nick"></p>
 		<p>Рейтинг:&nbsp;<input name="Rating"></p>
-		<p>Игр:&nbsp;<input name="Plays"></p>
-		<p>Побед:&nbsp;<input name="Wins"></p>
-		<p>MVP:&nbsp;<input name="MVP"></p>
-		<p>Побед красными:&nbsp;<input name="Red"></p>
-		<p>Побед черными:&nbsp;<input name="Black"></p>
-		<p>Побед шерифом:&nbsp;<input name="Cop"></p>
 		<p><input type=submit value="Добавить"></p>
 	</form>
 	<p>Вставить таблицу</p>
@@ -41,8 +35,8 @@
 	<? 		}
 	if (isset($_POST['Nick'])){
 		include "db.php";
-		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,?,?,?,?,?,?)");
-		$st->execute([$_POST['Nick'],$_POST['Rating'],$_POST['Rating'],$_POST['Plays'],$_POST['Wins'],$_POST['MVP'],$_POST['Red'],$_POST['Black'],$_POST['Cop']]);
+		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,0,0,0,0,0,0,0,0,0,0,0,0)");
+		$st->execute([$_POST['Nick'],$_POST['Rating']]);
 	}
 	if (isset($_GET['admin'])){
 		include "db.php";

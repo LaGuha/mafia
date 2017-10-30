@@ -1,6 +1,7 @@
 <?
 session_start();
-if (isset($_SESSEION['admin'])){
+
+if (isset($_SESSION['admin'])){
 	include "db.php";
 	if ($_POST['start']){
 		$st=$db->query("SELECT id,Rating FROM players");
@@ -33,29 +34,75 @@ if (isset($_SESSEION['admin'])){
 					
 		}
 		foreach ($mas as $key => $value) {
-			$st=$db->prepare("SELECT Rating FROM players WHERE id=?");
+			$st=$db->prepare("SELECT * FROM players WHERE id=?");
 			$st->execute([$value]);
 			$var=$st->fetch();		
-			$st=$db->prepare("UPDATE players SET Rating=? where id=?");
-			$st->execute([$rating+$var['Rating'],$value]);
+			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Red=?,Wins_red=? WHERE id=?");
+			$st->execute([$rating+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Red']+1,$var['Wins_red']+1,$value]);
 		}
 		foreach ($_POST['black'] as $key => $value) {
-			$st=$db->prepare("SELECT Rating FROM players WHERE id=?");
+			$st=$db->prepare("SELECT * FROM players WHERE id=?");
 			$st->execute([$value]);
 			$var=$st->fetch();		
-			$st=$db->prepare("UPDATE players SET Rating=? where id=?");
-			$st->execute([$rating-$var['Rating'],$value]);
+			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=? WHERE id=?");
+			$st->execute([$var['Rating']-$rating,$var['Num_games']+1,$value]);
 		}
-		$st=$db->prepare("SELECT Rating,MVP FROM players WHERE id=?");
+		$st=$db->prepare("SELECT * FROM players WHERE id=?");
 		$st->execute([$_POST['mvp']]);
 		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Rating=?, MVP=? where id=?");
-		$st->execute([$rating*2+$var['Rating'],$var['MVP']+1,$_POST['mvp']]);
+		$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Red=?,Wins_red=?, MVP=? WHERE id=?");
+		$st->execute([$rating*2+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Red']+1,$var['Wins_red']+1,$var['MVP']+1,$_POST['mvp']]);
+		$st=$db->prepare("SELECT * FROM players WHERE id=?");
+		$st->execute([$_POST['cop']]);
+		$var=$st->fetch();		
+		$st=$db->prepare("UPDATE players SET Cop=?,Wins_cop=? WHERE id=?");
+		$st->execute([$var['Cop']+1,$var['Wins_cop']+1,$_POST['cop']]);# code...
+		$st=$db->prepare("SELECT * FROM players WHERE id=?");
+		$st->execute([$_POST['don']]);
+		$var=$st->fetch();		
+		$st=$db->prepare("UPDATE players SET Don=? WHERE id=?");
+		$st->execute([$var['Don']+1,$_POST['don']]);# code.
 		echo ($rating);
 		
 
 	}else{
 		$rating=round(($red/$black)*20,0);
+		$mas=array();
+		foreach ($_POST['black'] as $key => $value) {
+			if ((int)$value!=(int)$_POST['mvp']){
+				$mas[]=$value;
+			}
+					
+		}
+		foreach ($mas as $key => $value) {
+			$st=$db->prepare("SELECT * FROM players WHERE id=?");
+			$st->execute([$value]);
+			$var=$st->fetch();		
+			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Black=?,Wins_black=? WHERE id=?");
+			$st->execute([$rating+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Black']+1,$var['Wins_black']+1,$value]);
+		}
+		foreach ($_POST['red'] as $key => $value) {
+			$st=$db->prepare("SELECT * FROM players WHERE id=?");
+			$st->execute([$value]);
+			$var=$st->fetch();		
+			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=? WHERE id=?");
+			$st->execute([$var['Rating']-$rating,$var['Num_games']+1,$value]);
+		}
+		$st=$db->prepare("SELECT * FROM players WHERE id=?");
+		$st->execute([$_POST['mvp']]);
+		$var=$st->fetch();		
+		$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Black=?,Wins_black=?,MVP=? WHERE id=?");
+		$st->execute([$rating*2+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Black']+1,$var['Wins_black']+1,$var['MVP']+1,$_POST['mvp']]);
+		$st=$db->prepare("SELECT * FROM players WHERE id=?");
+		$st->execute([$_POST['cop']]);
+		$var=$st->fetch();		
+		$st=$db->prepare("UPDATE players SET Cop=? WHERE id=?");
+		$st->execute([$var['Cop']+1,$_POST['cop']]);# code...
+		$st=$db->prepare("SELECT * FROM players WHERE id=?");
+		$st->execute([$_POST['don']]);
+		$var=$st->fetch();		
+		$st=$db->prepare("UPDATE players SET Don=?, Wins_don=? WHERE id=?");
+		$st->execute([$var['Don']+1,$var['Wins_don']+1,$_POST['don']]);# code.
 		echo ($rating);
 	}
 }
