@@ -13,96 +13,53 @@ if (isset($_SESSION['admin'])){
 	$red=0;
 	$black=0;
 	for ($i=0;$i<7;$i++){
-		$st=$db->prepare("SELECT Rating from players WHERE id=?");
-		$st->execute([$_POST['red'][$i]]);
+		$st=$db->prepare("SELECT Rating from players WHERE Nick=?");
+		$st->execute([$_POST['red'.($i+1)]]);
 		$var=$st->fetch();
-		$red=$red+$var['Rating']/7;
+		$red=$red+$var['Rating'];
 	}
 	for ($i=0;$i<3;$i++){
-		$st=$db->prepare("SELECT Rating from players WHERE id=?");
-		$st->execute([$_POST['black'][$i]]);
+
+		$st=$db->prepare("SELECT Rating from players WHERE Nick=?");
+		$st->execute([$_POST['black'.($i+1)]]);
 		$var=$st->fetch();
-		$black=$black+$var['Rating']/3;
+		$black=$black+$var['Rating'];
 	}
-	if ($_POST['win']){
-		$rating=round(($black/$red)*20,0);
-		$mas=array();
-		foreach ($_POST['red'] as $key => $value) {
-			if ((int)$value!=(int)$_POST['mvp']){
-				$mas[]=$value;
-			}
-					
+	if ($_POST['win']=='true'){
+		$rating=round((($black*3)/(7*$red))*20,0);
+		for ($i=1;$i<8;$i++) {
+			$st=$db->prepare("UPDATE players SET Rating=Rating+?,Num_games=Num_games+1,Wins=Wins+1,Red=Red+1,Wins_red=Wins_red+1 WHERE Nick=?");
+			$st->execute([$rating,$_POST['red'.$i]]);
 		}
-		foreach ($mas as $key => $value) {
-			$st=$db->prepare("SELECT * FROM players WHERE id=?");
-			$st->execute([$value]);
-			$var=$st->fetch();		
-			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Red=?,Wins_red=? WHERE id=?");
-			$st->execute([$rating+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Red']+1,$var['Wins_red']+1,$value]);
+		for($i=1;$i<4;$i++) {	
+			$st=$db->prepare("UPDATE players SET Rating=Rating-?,Num_games=Num_games+1 WHERE Nick=?");
+			$st->execute([$rating,$_POST['black'.$i]]);
 		}
-		foreach ($_POST['black'] as $key => $value) {
-			$st=$db->prepare("SELECT * FROM players WHERE id=?");
-			$st->execute([$value]);
-			$var=$st->fetch();		
-			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=? WHERE id=?");
-			$st->execute([$var['Rating']-$rating,$var['Num_games']+1,$value]);
-		}
-		$st=$db->prepare("SELECT * FROM players WHERE id=?");
-		$st->execute([$_POST['mvp']]);
-		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Red=?,Wins_red=?, MVP=? WHERE id=?");
-		$st->execute([$rating*2+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Red']+1,$var['Wins_red']+1,$var['MVP']+1,$_POST['mvp']]);
-		$st=$db->prepare("SELECT * FROM players WHERE id=?");
-		$st->execute([$_POST['cop']]);
-		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Cop=?,Wins_cop=? WHERE id=?");
-		$st->execute([$var['Cop']+1,$var['Wins_cop']+1,$_POST['cop']]);# code...
-		$st=$db->prepare("SELECT * FROM players WHERE id=?");
-		$st->execute([$_POST['don']]);
-		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Don=? WHERE id=?");
-		$st->execute([$var['Don']+1,$_POST['don']]);# code.
+		$st=$db->prepare("UPDATE players SET Rating=Rating+?, MVP=MVP+1 WHERE Nick=?");
+		$st->execute([$rating,$_POST['mvp']]);
+		$st=$db->prepare("UPDATE players SET Cop=Cop+1,Wins_cop=Wins_cop+1, Red=Red-1, Wins_red=Wins_red-1 WHERE Nick=?");
+		$st->execute([$_POST['red3']]);# code...
+		$st=$db->prepare("UPDATE players SET Don=Don+1 WHERE Nick=?");
+		$st->execute([$_POST['black3']]);# code.
 		echo ($rating);
 		
 
 	}else{
-		$rating=round(($red/$black)*20,0);
-		$mas=array();
-		foreach ($_POST['black'] as $key => $value) {
-			if ((int)$value!=(int)$_POST['mvp']){
-				$mas[]=$value;
-			}
-					
+		$rating=round((($red*3)/(7*$black))*20,0);
+		for($i=1;$i<4;$i++) {
+			$st=$db->prepare("UPDATE players SET Rating=Rating+?,Num_games=Num_games+1,Wins=Wins+1,Black=Black+1,Wins_black=Wins_black+1 WHERE Nick=?");
+			$st->execute([$rating,$_POST['black'.$i]]);
 		}
-		foreach ($mas as $key => $value) {
-			$st=$db->prepare("SELECT * FROM players WHERE id=?");
-			$st->execute([$value]);
-			$var=$st->fetch();		
-			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Black=?,Wins_black=? WHERE id=?");
-			$st->execute([$rating+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Black']+1,$var['Wins_black']+1,$value]);
+		for ($i=1;$i<8;$i++) {	
+			$st=$db->prepare("UPDATE players SET Rating=Rating-?,Num_games=Num_games+1 WHERE Nick=?");
+			$st->execute([$rating,$_POST['red'.$i]]);
 		}
-		foreach ($_POST['red'] as $key => $value) {
-			$st=$db->prepare("SELECT * FROM players WHERE id=?");
-			$st->execute([$value]);
-			$var=$st->fetch();		
-			$st=$db->prepare("UPDATE players SET Rating=?,Num_games=? WHERE id=?");
-			$st->execute([$var['Rating']-$rating,$var['Num_games']+1,$value]);
-		}
-		$st=$db->prepare("SELECT * FROM players WHERE id=?");
-		$st->execute([$_POST['mvp']]);
-		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Rating=?,Num_games=?,Wins=?,Black=?,Wins_black=?,MVP=? WHERE id=?");
-		$st->execute([$rating*2+$var['Rating'],$var['Num_games']+1,$var['Wins']+1,$var['Black']+1,$var['Wins_black']+1,$var['MVP']+1,$_POST['mvp']]);
-		$st=$db->prepare("SELECT * FROM players WHERE id=?");
-		$st->execute([$_POST['cop']]);
-		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Cop=? WHERE id=?");
-		$st->execute([$var['Cop']+1,$_POST['cop']]);# code...
-		$st=$db->prepare("SELECT * FROM players WHERE id=?");
-		$st->execute([$_POST['don']]);
-		$var=$st->fetch();		
-		$st=$db->prepare("UPDATE players SET Don=?, Wins_don=? WHERE id=?");
-		$st->execute([$var['Don']+1,$var['Wins_don']+1,$_POST['don']]);# code.
+		$st=$db->prepare("UPDATE players SET Rating=Rating+?, MVP=MVP+1 WHERE Nick=?");
+		$st->execute([$rating,$_POST['mvp']]);
+		$st=$db->prepare("UPDATE players SET Cop=Cop+1 WHERE Nick=?");
+		$st->execute([$_POST['red7']]);# code...
+		$st=$db->prepare("UPDATE players SET Don=Don+1, Wins_don=Wins_don+1 WHERE Nick=?");
+		$st->execute([$_POST['black3']]);# code.
 		echo ($rating);
 	}
 }

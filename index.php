@@ -38,7 +38,7 @@
 			$i=0;
 			while ($player=$st->fetch()){
 				$i++;
-				if ($player['Num_games']>4){
+				if ($player['Num_games']>4 || isset($_SESSION['admin'])){
 				?>
 					<div class="player" id=<?=$player['id']?>>
 						<p style="width: 45px"><?=$i?></p>
@@ -166,7 +166,7 @@
 											delete (red[a])
 										}
 										for (a=0;a<b;a++){
-											delete (red[a])
+											delete (black[a])
 										}
 										cop=0;
 										don=0;
@@ -189,7 +189,7 @@
 											delete (red[a])
 										}
 										for (a=0;a<b;a++){
-											delete (red[a])
+											delete (black[a])
 										}
 										cop=0;
 										don=0;

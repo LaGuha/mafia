@@ -1,5 +1,5 @@
 body{
-	min-width: 1005px;
+	min-width: 1200px;
 }
 #table{
 	display: flex;
@@ -48,4 +48,26 @@ form{
 form p{
 	display: flex;
 	justify-content: space-between;
+}
+.nick{
+	margin: 10px 0;
+	width: 200px;
+	height: 30px;
+}
+#game{
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: center;
+	width: 1200px;
+}
+#game div{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width:250px;
+}
+button{
+	width: 100px;
+	height: 50px;
 }
