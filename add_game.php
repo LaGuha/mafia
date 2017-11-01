@@ -64,3 +64,5 @@ if (isset($_SESSION['admin'])){
 	}
 }
 ?>
+<br>
+<a href=/new_game.php style="color: #0000ff">Все хорошо, иди назад</a>
