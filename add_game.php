@@ -3,30 +3,27 @@ session_start();
 
 if (isset($_SESSION['admin'])){
 	include "db.php";
-	if ($_POST['start']){
-		$st=$db->query("SELECT id,Rating FROM players");
-		while($player=$st->fetch()){
-			$st1=$db->prepare("UPDATE players SET Prev_rating=? WHERE id=?");
-			$st1->execute([$player['Rating'],$player['id']]);
-		}
-	}
+
 	$red=0;
 	$black=0;
+	$var=array();
 	for ($i=0;$i<7;$i++){
 		$st=$db->prepare("SELECT Rating from players WHERE Nick=?");
 		$st->execute([$_POST['red'.($i+1)]]);
-		$var=$st->fetch();
-		$red=$red+$var['Rating'];
+		$var[]=$st->fetch();
+		$red=$red+$var[$i]['Rating'];
 	}
+	$var1=array();
 	for ($i=0;$i<3;$i++){
 
 		$st=$db->prepare("SELECT Rating from players WHERE Nick=?");
 		$st->execute([$_POST['black'.($i+1)]]);
-		$var=$st->fetch();
-		$black=$black+$var['Rating'];
+		$var1[]=$st->fetch();
+		$black=$black+$var1[$i]['Rating'];
+
 	}
 	if ($_POST['win']=='true'){
-		$rating=round((($black*3)/(7*$red))*20,0);
+		$rating=round((($black*7)/(3*$red))*20,0);
 		for ($i=1;$i<8;$i++) {
 			$st=$db->prepare("UPDATE players SET Rating=Rating+?,Num_games=Num_games+1,Wins=Wins+1,Red=Red+1,Wins_red=Wins_red+1 WHERE Nick=?");
 			$st->execute([$rating,$_POST['red'.$i]]);
@@ -41,6 +38,9 @@ if (isset($_SESSION['admin'])){
 		$st->execute([$_POST['red3']]);# code...
 		$st=$db->prepare("UPDATE players SET Don=Don+1 WHERE Nick=?");
 		$st->execute([$_POST['black3']]);# code.
+		$st=$db->prepare("INSERT INTO games VALUES (id,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		//print_r($_POST);
+		$st->execute([$_POST['Lead'],date($_POST['data']),$_POST['Num'],$_POST['red1'].';'.$var[0]['Rating'],$_POST['red2'].';'.$var[1]['Rating'],$_POST['red3'].';'.$var[2]['Rating'],$_POST['red4'].';'.$var[3]['Rating'],$_POST['red5'].';'.$var[4]['Rating'],$_POST['red6'].';'.$var[5]['Rating'],$_POST['red7'].';'.$var[6]['Rating'],$_POST['black1'].';'.$var1[0]['Rating'],$_POST['black2'].';'.$var1[1]['Rating'],$_POST['black3'].';'.$var1[2]['Rating'],$_POST['win']]);
 		echo ($rating);
 		
 
@@ -65,4 +65,4 @@ if (isset($_SESSION['admin'])){
 }
 ?>
 <br>
-<a href=/new_game.php style="color: #0000ff">Все хорошо, иди назад</a>
+<a href=new_game.php style="color: #0000ff">Все хорошо, иди назад</a>

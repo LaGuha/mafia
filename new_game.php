@@ -16,7 +16,7 @@
 
 	}
 	?>
-
+		<p style="text-decoration: underline; color: blue" id=delta>Обнулить Дельта</p>
 	<form method="POST" id=game action="add_game.php">
 		<div>
 			<p>Красная команда</p>
@@ -44,15 +44,35 @@
 		<div>
 			<p style="width:100px;">MVP</p>
 			<input name=mvp id=nick11 class="nick">
-			Красные <input type=radio name=win value=true>
-			Черные <input type=radio name=win value=false>
+			<p style="width: 100%">Красные <input type=radio name=win value=true>
+			Черные <input type=radio name=win value=false></p>
+			<p>Ведущий:</p> <p><input  name="Lead"></p>
+			<p style="width: 100%">Дата:</p> <input type="date" name="data">
+			<p style="width: 100%">Номер игры:</p> <input name="Num">
 
-			<p>&nbsp;</p>
+			<p style="width: 100%">&nbsp;</p>
 			<button type=submit>Сохранить</button>
 		</div>
 	</form>
 
 <script>
+
+$('#delta').click(function(){
+	$.ajax({
+        url: "delta.php",
+        type: "POST",
+        async:false,
+        data:{
+        	start:1
+        },
+        success: function(data){
+        	alert(data)
+
+        }
+    })
+
+})
+
 var arr= new Array()
 $.ajax({
         url: "nicks.php",
