@@ -35,7 +35,7 @@ if (isset($_SESSION['admin'])){
 		$st=$db->prepare("UPDATE players SET Rating=Rating+?, MVP=MVP+1 WHERE Nick=?");
 		$st->execute([$rating,$_POST['mvp']]);
 		$st=$db->prepare("UPDATE players SET Cop=Cop+1,Wins_cop=Wins_cop+1, Red=Red-1, Wins_red=Wins_red-1 WHERE Nick=?");
-		$st->execute([$_POST['red3']]);# code...
+		$st->execute([$_POST['red7']]);# code...
 		$st=$db->prepare("UPDATE players SET Don=Don+1 WHERE Nick=?");
 		$st->execute([$_POST['black3']]);# code.
 		$st=$db->prepare("INSERT INTO games VALUES (id,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");

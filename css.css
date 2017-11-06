@@ -1,6 +1,12 @@
 body{
 	min-width: 1200px;
 }
+.green{
+	color: green;
+}
+.red{
+	color: red;
+}
 #table{
 	display: flex;
 	flex-wrap: wrap;
@@ -73,4 +79,7 @@ form p{
 button{
 	width: 100px;
 	height: 50px;
+}
+#spacer{
+	height: 2000px;
 }
