@@ -1,4 +1,4 @@
-<? session_start(); ?>
+<? session_start(); unset($_SESSION['admin']);?>
 <head>
 	<title>Рейтинг</title>
 	<meta charset="UTF-8">
@@ -19,8 +19,8 @@
 	}
 ?>
 	<div id=table>
-		<p class="header">Рейтинг клуба мафии</p>
-		<div class="player">
+		<p class="header">Рейтинг клуба мафии Гринвич</p>
+		<div class="player" style="position: fixed;top:21px;">
 			<p style="width: 45px">№</p>
 			<p style="width: 155px">Ник</p>
 			<p style="width: 65px">Рейтинг</p>
@@ -38,9 +38,9 @@
 			$i=0;
 			while ($player=$st->fetch()){
 				$i++;
-				if ($player['Num_games']>4 || isset($_SESSION['admin'])){
+				if (($player['Num_games']>4 && ($player['Prev_rating']!=$player['Rating']))|| isset($_SESSION['admin'])){
 				?>
-					<div class="player" id=<?=$player['id']?>>
+					<div class="player" id="<?=$player['id']?>"<? if ($i==1){?>style="margin-top:40px;" <?}?> >
 						<p style="width: 45px"><?=$i?></p>
 						<p style="width: 155px" class="Name"><?=$player['Nick']?></p>
 						<p style="width: 65px"><?=$player['Rating']?></p>
