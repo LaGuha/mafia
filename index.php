@@ -37,9 +37,10 @@
 			$st=$db->query("SELECT * FROM players ORDER BY Rating DESC");
 			$i=0;
 			while ($player=$st->fetch()){
-				$i++;
+				
 				$delta=$player['Rating']-$player['Prev_rating'];
 				if (($player['Num_games']>4 && ($player['Prev_rating']!=$player['Rating']))|| isset($_SESSION['admin'])){
+					$i++;
 				?>
 					<div class="player" id="<?=$player['id']?>"<? if ($i==1){?>style="margin-top:40px;" <?}?> >
 						<p style="width: 45px"><?=$i?></p>
