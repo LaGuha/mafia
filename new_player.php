@@ -32,11 +32,16 @@
 		<input type="file" name=file>
 		<button type=submit>Обновить таблицу</button>
 	</form>
+
+	<form method=POST action="update_table.php">
+		<input type=hidden name=dwnload>
+		<button type=submit>Выгрузка</button>
+	</form>
 	<? 		}
 	if (isset($_POST['Nick'])){
 		include "db.php";
-		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,0,0,0,0,0,0,0,0,0,0,0,0)");
-		$st->execute([$_POST['Nick'],$_POST['Rating']]);
+		$st=$db->prepare("INSERT INTO players VALUES (id,?,?,?,0,0,0,0,0,0,0,0,0,0,0)");
+		$st->execute([$_POST['Nick'],$_POST['Rating'],$_POST['Rating']]);
 	}
 	if (isset($_GET['admin'])){
 		include "db.php";

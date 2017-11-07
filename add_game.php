@@ -60,6 +60,7 @@ if (isset($_SESSION['admin'])){
 		$st->execute([$_POST['red7']]);# code...
 		$st=$db->prepare("UPDATE players SET Don=Don+1, Wins_don=Wins_don+1 WHERE Nick=?");
 		$st->execute([$_POST['black3']]);# code.
+		$st->execute([$_POST['Lead'],date($_POST['data']),$_POST['Num'],$_POST['red1'].';'.$var[0]['Rating'],$_POST['red2'].';'.$var[1]['Rating'],$_POST['red3'].';'.$var[2]['Rating'],$_POST['red4'].';'.$var[3]['Rating'],$_POST['red5'].';'.$var[4]['Rating'],$_POST['red6'].';'.$var[5]['Rating'],$_POST['red7'].';'.$var[6]['Rating'],$_POST['black1'].';'.$var1[0]['Rating'],$_POST['black2'].';'.$var1[1]['Rating'],$_POST['black3'].';'.$var1[2]['Rating'],$_POST['win']]);
 		echo ($rating);
 	}
 }
